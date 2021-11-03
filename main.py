@@ -1,7 +1,11 @@
 import math
 import random
 
+from matplotlib import pyplot as plt
+from typing import List
+
 # CONSTANTS
+
 DIMENSION = 2
 COUNT_POINTS = 100
 COUNT_EPOCHS = 1000
@@ -31,10 +35,12 @@ def otimization():
     p2 = 1.8
     q2 = 0
 
+    w1, w2 = gaussians_generate(x1, x2, sd1, sd2)
+    plot(x, w1, x, w2)
+
 
 def gradient(x1: float, sig1: float, x2: float, sig2: float, p1: float, p2: float, q1: float, q2: float, y: float,
-             yd: float, alfa: float, ) -> \
-        tuple[float, float, float, float, float, float, float, float]:
+             yd: float, alfa: float, ):
     pk1 = p1 - alfa * (__derivative_p(y, yd, sig1, sig2, x1))
     pk2 = p2 - alfa * (__derivative_p(y, yd, sig1, sig2, x2))
 
@@ -45,12 +51,18 @@ def gradient(x1: float, sig1: float, x2: float, sig2: float, p1: float, p2: floa
     y2 = pk2 * x1 + qk2
 
 
-def gaussians_generate():
-    pass
+def gaussians_generate(x1: float, x2: float, sigma1: float, sigma2: float) -> tuple[List: float, List: float]:
+    w1 = list()
+    w2 = list()
+    for i in x:
+        w1.append(__gaussian(i, x1, sigma2))
+        w2.append(__gaussian(i, x2, sigma2))
+    return [w1, w2]
 
 
-def plot():
-    pass
+def plot(array_x1: List[float], array_y1: List[float], array_x2: List[float], array_y2: List[float]):
+    plt.plot(array_x1, array_y1, 'bs', array_x2, array_y2, 'bs')
+    plt.show()
 
 
 def __derivative_p(y: float, yd: float, w1: float, w2: float, x: float) -> float:
@@ -80,4 +92,4 @@ def __gaussian(x: float, mu: float, sigma: float) -> float:
 
 
 if __name__ == '__main__':
-    run()
+    otimization()
