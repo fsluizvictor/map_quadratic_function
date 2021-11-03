@@ -1,14 +1,35 @@
+import math
 import random
+
+# CONSTANTS
+DIMENSION = 2
+COUNT_POINTS = 100
+COUNT_EPOCHS = 1000
+ADJUSTMENT = 1
+
+# INITIALIZE ARRAYS
+y = [0] * COUNT_POINTS
+x = [random.uniform(-DIMENSION, DIMENSION) for i in range(COUNT_POINTS)]
+x.sort()
+
+
+def run():
+    # TODO: add the plot of original function
+
+    pass
 
 
 def otimization():
-    random.seed(2)
-    y1 = random.random()
-    y2 = random.random()
-    w1 = random.random()
-    w2 = random.random()
-    y = random.random()
-    yd = random.random()
+    # ENTRY VALUES
+    x1 = 2
+    sd1 = 1.7
+    x2 = -2
+    sd2 = 1.7
+
+    p1 = -1.8
+    q1 = 0
+    p2 = 1.8
+    q2 = 0
 
 
 def gradient(x1: float, sig1: float, x2: float, sig2: float, p1: float, p2: float, q1: float, q2: float, y: float,
@@ -22,7 +43,14 @@ def gradient(x1: float, sig1: float, x2: float, sig2: float, p1: float, p2: floa
 
     y1 = pk1 * x1 + qk1
     y2 = pk2 * x1 + qk2
-    xk1 = x1 - alfa * (__derivative_x(y, yd, y1, y2, sig1, sig2))
+
+
+def gaussians_generate():
+    pass
+
+
+def plot():
+    pass
 
 
 def __derivative_p(y: float, yd: float, w1: float, w2: float, x: float) -> float:
@@ -47,10 +75,9 @@ def __y(y1: float, y2: float, w1: float, w2: float):
     return (w1 * y1 + w2 * y2) / w1 + w2
 
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press ⌘F8 to toggle the breakpoint.
+def __gaussian(x: float, mu: float, sigma: float) -> float:
+    return math.exp(-1 / 2 * ((x - mu) / sigma) ** 2)
 
 
 if __name__ == '__main__':
-    print_hi('PyCharm')
+    run()
