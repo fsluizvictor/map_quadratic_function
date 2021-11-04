@@ -90,6 +90,7 @@ def gaussians_generate(x1: float, x2: float, sigma1: float, sigma2: float) -> tu
 
 
 def curve_approximate_generate(w1: List[float], w2: List[float]) -> tuple[List: float, List: float]:
+    pass
 
 
 def plot(array_x1: List[float], array_y1: List[float], array_x2: List[float], array_y2: List[float]):
