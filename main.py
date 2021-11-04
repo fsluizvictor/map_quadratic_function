@@ -85,8 +85,10 @@ def gradient(x1: float, sig1: float, x2: float, sig2: float, p1: float, p2: floa
 def gaussians_generate(x1: float, x2: float, sigma1: float, sigma2: float) -> tuple[List: float, List: float]:
     w1 = list()
     w2 = list()
-
-    return w1, w2
+    for i in x:
+        w1.append(__gaussian(i, x1, sigma2))
+        w2.append(__gaussian(i, x2, sigma2))
+    return [w1, w2]
 
 
 def curve_approximate_generate(w1: List[float], w2: List[float]) -> tuple[List: float, List: float]:
