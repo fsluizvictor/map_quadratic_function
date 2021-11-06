@@ -33,9 +33,11 @@ def sugeno():
 
     # out
     p1 = -1.8
-    q1 = 0
+    q1 = 0.0
     p2 = 1.8
-    q2 = 0
+    q2 = 0.0
+
+    # TODO: Plot the original function
 
     # # generate gaussians
     # w1, w2 = gaussians_generate(x1, x2, sd1, sd2)
@@ -83,6 +85,9 @@ def sugeno():
             yo = __y(y1, y2, w1, w2)
             p1, p2, q1, q2, x1, x2, sd1, sd2 = gradient(x[j], x1, w1, x2, w2, p1, p2, q1, q2, yo, yd, y1, y2, alpha,
                                                         sd1, sd2)
+
+
+    # TODO: add rate of functions
 
 
 def gradient(x: float, x1: float, w1: float, x2: float, w2: float, p1: float, p2: float,
