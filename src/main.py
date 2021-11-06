@@ -70,6 +70,7 @@ def sugeno():
 
     for i in range(COUNT_EPOCHS):
         random.shuffle(x)
+        quadratic_error = 0.0
 
         for j in range(COUNT_POINTS):
             alpha = 0.01
@@ -80,10 +81,14 @@ def sugeno():
             y1 = p1 * x[j] + q1
             y2 = p2 * x[j] + q2
             yo = __y(y1, y2, w1, w2)
+            p1, p2, q1, q2, x1, x2, sd1, sd2 = gradient(x[j], x1, w1, x2, w2, p1, p2, q1, q2, yo, yd, y1, y2, alpha,
+                                                        sd1, sd2)
 
 
-def gradient(x: float, x1: float, w1: float, x2: float, w2: float, p1: float, p2: float, q1: float, q2: float, y: float,
-             yd: float, y1: float, y2: float, alfa: float, sd1: float, sd2: float):
+def gradient(x: float, x1: float, w1: float, x2: float, w2: float, p1: float, p2: float,
+             q1: float, q2: float, y: float, yd: float, y1: float, y2: float, alfa: float,
+             sd1: float, sd2: float) -> \
+        tuple[float, float, float, float, float, float, float, float]:
     pk1 = p1 - alfa * (__derivative_p(y, yd, w1, w2, x))
     pk2 = p2 - alfa * (__derivative_p(y, yd, w1, w2, x))
 
@@ -92,6 +97,11 @@ def gradient(x: float, x1: float, w1: float, x2: float, w2: float, p1: float, p2
 
     xk1 = x1 - alfa * (__derivative_x(y, yd, y1, y2, w1, w2, x, x1, sd1))
     xk2 = x2 - alfa * (__derivative_x(y, yd, y1, y2, w1, w2, x, x2, sd2))
+
+    sdk1 = sd1 - alfa * (__derivative_sigma(y, yd, y1, y2, w1, w2, x, x1, sd1))
+    sdk2 = sd2 - alfa * (__derivative_sigma(y, yd, y1, y2, w1, w2, x, x2, sd2))
+
+    return pk1, pk2, qk1, qk2, xk1, xk2, sdk1, sdk2
 
 
 def gauss_m_f(x: float, x1: float, x2: float, sigma1: float, sigma2: float) -> tuple[float, float]:
@@ -122,8 +132,8 @@ def __derivative_x(y: float, yd: float, y1: float, y2: float, w1: float, w2: flo
     return (y - yd) * w2 * (y1 - y2) / (w1 + w2) ** 2 * w1 * ((x - x_) / sig_ ** 2)
 
 
-def __derivative_sigmoide(y: float, yd: float, y1: float, y2: float, w1: float, w2: float, x: float, x_: float,
-                          sig_: float) -> float:
+def __derivative_sigma(y: float, yd: float, y1: float, y2: float, w1: float, w2: float, x: float, x_: float,
+                       sig_: float) -> float:
     return (y - yd) * w2 * ((y1 - y2) / (w1 + w2) ** 2) * w1 * ((x - x_) ** 2 / sig_ ** 3)
 
 
