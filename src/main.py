@@ -77,17 +77,21 @@ def sugeno():
 
             w1, w2 = gauss_m_f(x[j], x1, x2, sd1, sd2)
 
+            y1 = p1 * x[j] + q1
+            y2 = p2 * x[j] + q2
+            yo = __y(y1, y2, w1, w2)
 
-def gradient(x1: float, sig1: float, x2: float, sig2: float, p1: float, p2: float, q1: float, q2: float, y: float,
-             yd: float, alfa: float, ):
-    pk1 = p1 - alfa * (__derivative_p(y, yd, sig1, sig2, x1))
-    pk2 = p2 - alfa * (__derivative_p(y, yd, sig1, sig2, x2))
 
-    qk1 = q1 - alfa * (__derivative_q(y, yd, sig1, sig2))
-    qk2 = q2 - alfa * (__derivative_q(y, yd, sig2, sig1))
+def gradient(x: float, x1: float, w1: float, x2: float, w2: float, p1: float, p2: float, q1: float, q2: float, y: float,
+             yd: float, y1: float, y2: float, alfa: float, sd1: float, sd2: float):
+    pk1 = p1 - alfa * (__derivative_p(y, yd, w1, w2, x))
+    pk2 = p2 - alfa * (__derivative_p(y, yd, w1, w2, x))
 
-    y1 = pk1 * x1 + qk1
-    y2 = pk2 * x1 + qk2
+    qk1 = q1 - alfa * (__derivative_q(y, yd, w1, w2))
+    qk2 = q2 - alfa * (__derivative_q(y, yd, w2, w1))
+
+    xk1 = x1 - alfa * (__derivative_x(y, yd, y1, y2, w1, w2, x, x1, sd1))
+    xk2 = x2 - alfa * (__derivative_x(y, yd, y1, y2, w1, w2, x, x2, sd2))
 
 
 def gauss_m_f(x: float, x1: float, x2: float, sigma1: float, sigma2: float) -> tuple[float, float]:
