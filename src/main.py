@@ -36,17 +36,12 @@ class GraphicProperties:
 
 
 # INITIALIZE ARRAYS
-# x = [random.uniform(-DIMENSION, DIMENSION) for i in range(COUNT_POINTS)]
 x = [i for i in numpy.arange(-2, 2, 4 / COUNT_POINTS)]
 x.sort()
 y = [i ** 2 for i in x]
 
 
 def run():
-    # TODO: Plot the original function
-    # TODO: Plot the error
-    # TODO: Plot the original gaussians functions
-    # TODO: Plot the aproximation
     sugeno()
 
 
@@ -86,7 +81,6 @@ def sugeno():
         epoch_error.append(error / COUNT_POINTS)
         print(error / COUNT_POINTS)
     error_plot(epoch_error)
-    # TODO : ADD PLOT ERROR
 
     generated_y = list()
     x.sort()
@@ -143,8 +137,9 @@ def original_function_plot():
 def error_plot(errors: List[float]):
     epochs = [i for i in range(COUNT_EPOCHS)]
     errors.sort()
+    errors.reverse()
     __plot(epochs, errors, None, None, GraphicProperties.RED_SOLID_LINE,
-           GraphicProperties.EPOCHS_ERROR + str(errors[0]))
+           GraphicProperties.EPOCHS_ERROR + str(errors[len(errors) - 1]))
 
 
 def __plot(array_x1: Optional[List[float]] = None,
