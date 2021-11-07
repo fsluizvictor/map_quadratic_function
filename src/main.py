@@ -4,7 +4,6 @@ import random
 import numpy
 from matplotlib import pyplot as plt
 from typing import List, Optional
-from enum import Enum
 
 # CONSTANTS
 
@@ -16,7 +15,7 @@ ALPHA = 0.01
 
 
 # GRAPHIC PROPERTIES
-class GraphicProperties(Enum):
+class GraphicProperties:
     BLUE_CIRCLE_MARKS = 'bo'
     GREEN_CIRCLE_MARKS = 'go'
     RED_CIRCLE_MARKS = 'ro'
@@ -30,15 +29,15 @@ class GraphicProperties(Enum):
     RED_DASHED_LINE = '--r'
 
     ORIGINAL_FUNCTION = 'FUNÇÃO ORIGINAL - X**2'
-    GAUSSIANS = 'GAUSSIANAS'
+    FIRST_GAUSSIAN = "GAUSSIANA 1"
+    SECOND_GAUSSIAN = 'GAUSSIANA 2'
     APPROXIMATE_FUNCTION = 'FUNÇÃO APROXIMADA'
-    EPOCHS_ERROR = 'ERRO DAS ÉPOCAS'
+    EPOCHS_ERROR = 'ERRO DAS ÉPOCAS - '
 
 
 # INITIALIZE ARRAYS
 # x = [random.uniform(-DIMENSION, DIMENSION) for i in range(COUNT_POINTS)]
-x = [i for i in numpy.arange(-2, 2, 4 / (COUNT_POINTS - 1))]
-x.append(2)
+x = [i for i in numpy.arange(-2, 2, 4 / COUNT_POINTS)]
 x.sort()
 y = [i ** 2 for i in x]
 
@@ -67,7 +66,7 @@ def sugeno():
 
     initial_function_plot(x1, x2, sd1, sd2)
 
-    epoch_error = 1
+    epoch_error = list()
 
     for i in range(COUNT_EPOCHS):
         random.shuffle(x)
@@ -84,19 +83,20 @@ def sugeno():
             p1, p2, q1, q2, x1, x2, sd1, sd2 = gradient(x[j], x1, w1, x2, w2, p1, p2, q1, q2, yo, yd, y1, y2, alpha,
                                                         sd1, sd2)
             error += (yo - yd) ** 2 / 2
-            epoch_error = error
-        print(epoch_error / COUNT_POINTS)
+        epoch_error.append(error / COUNT_POINTS)
+        print(error / COUNT_POINTS)
+    error_plot(epoch_error)
+    # TODO : ADD PLOT ERROR
 
-    # TODO: add rate of functions
-
-    test_y = list()
+    generated_y = list()
     x.sort()
     for i in range(COUNT_POINTS):
         w1, w2 = gauss_m_f(x[i], x1, x2, sd1, sd2)
         y1 = p1 * x[i] + q1
         y2 = p2 * x[i] + q2
-        test_y.append(__y(y1, y2, w1, w2))
-    plot_t(x, test_y, x, y)
+        generated_y.append(__y(y1, y2, w1, w2))
+    __plot(x, generated_y, x, y, GraphicProperties.RED_DASHED_LINE, GraphicProperties.APPROXIMATE_FUNCTION,
+           GraphicProperties.BLUE_SOLID_LINE, GraphicProperties.ORIGINAL_FUNCTION)
 
 
 def gradient(x: float, x1: float, w1: float, x2: float, w2: float, p1: float, p2: float,
@@ -124,44 +124,6 @@ def gauss_m_f(x: float, x1: float, x2: float, sigma1: float, sigma2: float) -> t
     return w1, w2
 
 
-def plot(array_x1: Optional[List[float]] = None, array_y1: Optional[List[float]] = None,
-         array_x2: Optional[List[float]] = None,
-         array_y2: Optional[List[float]] = None):
-    if array_x1 and array_x2 and array_y1 and array_y2:
-        plt.plot(array_x1, array_y1, '-g', array_x2, array_y2, '-g')
-        plt.show()
-        return
-
-    if array_x1 and array_y1:
-        plt.plot(array_x1, array_y1, '-g')
-        plt.show()
-        return
-
-
-def plot_t(array_x1: Optional[List[float]] = None, array_y1: Optional[List[float]] = None,
-           array_x2: Optional[List[float]] = None,
-           array_y2: Optional[List[float]] = None,
-           type_line: Optional[GraphicProperties] = '',
-           label_text: Optional[GraphicProperties] = ''
-           ):
-    if array_x1 and array_x2 and array_y1 and array_y2:
-        fig, ax = plt.subplots()
-        ax.plot(array_x1, array_y1, type_line, label=label_text)
-        ax.plot(array_x2, array_y2, type_line, label=label_text)
-        ax.axis('equal')
-        leg = ax.legend()
-        plt.show()
-        return
-
-    if array_x1 and array_y1:
-        fig, ax = plt.subplots()
-        ax.plot(array_x1, array_y1, type_line, label=label_text)
-        ax.axis('equal')
-        leg = ax.legend()
-        plt.show()
-        return
-
-
 def initial_function_plot(x1: float, x2: float, sd1: float, sd2: float):
     points_w1 = list()
     points_w2 = list()
@@ -170,7 +132,46 @@ def initial_function_plot(x1: float, x2: float, sd1: float, sd2: float):
         points_w1.append(w1)
         points_w2.append(w2)
     x.sort()
-    plot(x, points_w1, x, points_w2)
+    __plot(x, points_w1, x, points_w2, GraphicProperties.GREEN_SOLID_LINE, GraphicProperties.FIRST_GAUSSIAN,
+           GraphicProperties.GREEN_SOLID_LINE, GraphicProperties.SECOND_GAUSSIAN)
+
+
+def original_function_plot():
+    __plot(x, y, None, None, GraphicProperties.BLUE_CIRCLE_MARKS, GraphicProperties.ORIGINAL_FUNCTION)
+
+
+def error_plot(errors: List[float]):
+    epochs = [i for i in range(COUNT_EPOCHS)]
+    errors.sort()
+    __plot(epochs, errors, None, None, GraphicProperties.RED_SOLID_LINE,
+           GraphicProperties.EPOCHS_ERROR + str(errors[0]))
+
+
+def __plot(array_x1: Optional[List[float]] = None,
+           array_y1: Optional[List[float]] = None,
+           array_x2: Optional[List[float]] = None,
+           array_y2: Optional[List[float]] = None,
+           type_line1: Optional[str] = '',
+           label_text1: Optional[str] = '',
+           type_line2: Optional[str] = '',
+           label_text2: Optional[str] = ''
+           ):
+    if array_x1 and array_x2 and array_y1 and array_y2:
+        fig, ax = plt.subplots()
+        ax.plot(array_x1, array_y1, type_line1, label=label_text1)
+        ax.plot(array_x2, array_y2, type_line2, label=label_text2)
+        ax.axis('equal')
+        leg = ax.legend()
+        plt.show()
+        return
+
+    if array_x1 and array_y1:
+        fig, ax = plt.subplots()
+        ax.plot(array_x1, array_y1, type_line1, label=label_text1)
+        ax.axis('equal')
+        leg = ax.legend()
+        plt.show()
+        return
 
 
 def __derivative_p(y: float, yd: float, w1: float, w2: float, x: float) -> float:
@@ -202,4 +203,4 @@ def __gaussian_membership_function(x: float, mu: float, sigma: float) -> float:
 
 
 if __name__ == '__main__':
-    sugeno()
+    run()
